@@ -1,8 +1,13 @@
 import io._
 
 object ex1 {
-	
+	val five = 5
+	val amount = five / 0 
 	def example(title:String)(block: => Unit):Unit = {
+		println("==> "+title)
+		block
+	}
+	def magicDef(title:String,magic:String)(block: => Unit):Unit = {
 		println("==> "+title)
 		block
 	}
@@ -54,36 +59,21 @@ object ex1 {
 		example("Currying / Partial application") {
 			val string2int  = Integer.parseInt(_:String)
 		}
-		
-		/*
-
-		example("") {
-		}
-		 */
-		
-		{
-			// Imports fáceis
+				
+		example("Imports fáceis") { 
 			import java.io.{File, FileInputStream => FIS}
-			import java.io.{File, FileInputStream=>FIS}
 			
 			new FIS(new File("aaa"))
 			
-			import java.lang.Math
-			import java.lang.Math
-			
+			import java.lang.Math			
 			Math.abs(-10)
 			
-			import java.lang.Math.{PI, tan}
-			import java.lang.Math.{PI, tan}
-			
+			import java.lang.Math.{PI, tan}			
 			tan(PI)
 			
-			import java.lang.Math.{abs => absolute, tan => tangente}
-					
+			import java.lang.Math.{abs => absolute, tan => tangente}					
 			absolute(-10)
-		}
-				
-		{
+						
 			// Easy acessors and mutators
 			class Address(var street:String, var number:Int)		
 			val ideais=new Address("Rua da assembleia", 98)
@@ -92,15 +82,16 @@ object ex1 {
 			ideais.number = 100
 			
 			ideais.number
+			example("Imports de objetos") {     
+				import ideais._		
+				println(street)
+			}
 			
-					// Imports de objetos      
-			import ideais._		
-			println(street)
-			
-			// Named arguments
-			val oldIdeais=new Address(number=80, street="Rua Sao Jose")		
-			oldIdeais.street		
-		}			
+			example("Named arguments") {
+				val oldIdeais=new Address(number=80, street="Rua Sao Jose")		
+				println(oldIdeais.street)		
+			}
+		}
 		
 		// Default arguments
 		def aaa(y:String, x:Int=1) = { println(1) }
@@ -112,8 +103,11 @@ object ex1 {
 	// Default arguments		
 	class Address(var street:String, var number:Int, var city:String="Rio de Janeiro")
 	val ideais=new Address("Rua da assembleia", 98)
-	ideais.city
-		
-		
+	ideais.city		
+
+	/*
+	example("") {
+	}
+	 */		
 		
 }

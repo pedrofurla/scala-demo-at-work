@@ -12,7 +12,7 @@ object ex2 {
 			case Array(name, age, "M") => Male(name, Integer.parseInt(age))
 		 	case Array(name, age, "F") => Female(name, Integer.parseInt(age))
 			case Array(name, age, "M",job) => Male(name, Integer.parseInt(age),Some(job))
-			 case Array(name, age, "F",job) => Female(name, Integer.parseInt(age),Some(job))
+			case Array(name, age, "F",job) => Female(name, Integer.parseInt(age),Some(job))
 		}
 	}
 		
