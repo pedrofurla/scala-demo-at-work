@@ -19,14 +19,41 @@ class SourcePlugin(val global: Global) extends Plugin {
     val phaseName = SourcePlugin.this.name
     def newPhase(_prev: Phase) = new SourcePluginPhase(_prev)    
     
+    
+    
     class SourcePluginPhase(prev: Phase) extends StdPhase(prev) {
       override def name = SourcePlugin.this.name
+      
+      def show(t:Tree)={
+    	  println(t.productPrefix + " : "+ t.getClass)
+      }
+      def show(ts:List[Tree]):Unit={
+    	  ts.foreach(show)
+      }
+      
       def apply(unit: CompilationUnit) {
     	  //DefDef (mods: Modifiers, name: Name, tparams: List[TypeDef], vparamss: List[List[ValDef]], tpt: Tree, rhs: Tree)
+    	  /*
     	  for (unit <- global.currentRun.units; if !unit.isJava) {
     	 	   unit.body = TreeTransformer.transform(unit.body)
-    	  }
-    	   println(unit.body)
+    	  } */
+    	  
+    	  for ( /*tree @ Apply(Select(_, name), _) <- unit.body;*/
+    	 		  /*if (name.toString contains "magicDef")*/
+    	 		 tree @ Apply(Apply( Select(_,name), args @ _) , _ ) <- unit.body;
+    	 		 if (name.toString == "magicDef")
+              ) 
+          {
+    	 	println("tree:")
+    	 	show(tree)
+    	 	println(tree)
+    	 	println("args:")
+    	 	println(args)     
+    	 	
+            
+          }
+    	  
+    	  //println(unit.body)
         /*for ( tree @ Apply(Select(rcvr, nme.DIV), List(Literal(Constant(0)))) <- unit.body;
              if rcvr.tpe <:< definitions.IntClass.tpe) 
           {
@@ -36,6 +63,18 @@ class SourcePlugin(val global: Global) extends Plugin {
     }
   }
   object TreeTransformer extends Transformer {
+    
+	  /**
+	   * This method transforms individual nodes of the tree.
+	   */
+	  override def transform(tree: Tree) = tree match {
+	      case t @ Apply(method @ Select(_, name), args @ List(arg0 @ _, arg1 @ _)) if(name.toString == "magicDef") =>
+	       	  Apply(method, List(arg0, transform(Literal(Constant("MORE MAGIC!"))) ))
+	      case t =>        
+	          super.transform(t)
+	  }
+  }
+  object TreeTransformerTest extends Transformer {
     
 	  /**
 	   * This method transforms individual nodes of the tree.
@@ -55,9 +94,11 @@ object SourcePlugin {
 	def main(args:Array[String]):Unit = { println("here I am");
 		scala.tools.nsc.Main.main(
 			Array(
-				"src/main/scala/ex1.scala",
+				"src/main/scala/sample.scala",
 				"-d","bin-tmp",
-				"-Xplugin","lib/scala-plugin-xml.jar")
+				"-Xplugin","lib/scala-plugin-xml.jar"
+				/*"-Ybrowse:refchecks"*/
+				)
 			)
 	}
 }

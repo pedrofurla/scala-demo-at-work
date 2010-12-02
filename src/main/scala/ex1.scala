@@ -15,6 +15,10 @@ object ex1 {
 	// Sem `return`
 
 	def main(args:Array[String]):Unit = {
+		magicDef("bleh","da magic") {
+			println("INSIDE")
+		}
+		
 		example("Tuplas") {
 			val t = ("Um string", 3.14, new java.io.File("dados.txt"))
 			println(t)
