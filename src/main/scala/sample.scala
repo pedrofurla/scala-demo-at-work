@@ -1,6 +1,6 @@
 import io._
 
-object ex1 {
+object sample {
 	def magicDef(title:String,magic:String)(block: => Unit):Unit = {
 		println("==> "+title)
 		block
