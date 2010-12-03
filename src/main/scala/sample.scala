@@ -1,7 +1,9 @@
 import io._
 
+class SourceProvider extends StaticAnnotation
+
 object sample {
-	def magicDef(title:String,magic:String)(block: => Unit):Unit = {
+	def magicDef(title:String,magic: String @SourceProvider)(block: => Unit):Unit = {
 		println("==> "+title)
 		block
 	}

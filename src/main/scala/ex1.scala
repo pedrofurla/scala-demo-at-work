@@ -22,7 +22,11 @@ object ex1 {
 		example("Tuplas") {
 			val t = ("Um string", 3.14, new java.io.File("dados.txt"))
 			println(t)
-			println(t._1 + " - " + t._2)			
+			println(t._1 + " - " + t._2)		
+			
+			example("Multiplos retornos") {
+				
+			}
 		}
 		
 		example("Tudo são expressões") {
@@ -96,7 +100,7 @@ object ex1 {
 				println(oldIdeais.street)		
 			}
 		}
-		
+						
 		// Default arguments
 		def aaa(y:String, x:Int=1) = { println(1) }
 		aaa("")
