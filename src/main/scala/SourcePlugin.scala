@@ -80,7 +80,8 @@ class SourcePlugin(val global: Global) extends Plugin {
 	       	  
 	       	  { import scala.tools.nsc.io._
 	         	val pos = interestingSource.pos
-	         	tree.symbol.owner
+	         	//tree.symbol.owner
+	         	DumpScalaCompiler.compile(tree.symbol.sourceFile.path)
 	        	//println(File(tree.symbol.sourceFile.path).lines.take(pos.line-1).reduceLeft(_ + "\n"+_)) 
 	          } 
 	       	  /*println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
@@ -96,6 +97,51 @@ class SourcePlugin(val global: Global) extends Plugin {
   }
   
 }
+
+object DumpScalaCompiler { dCompiler =>
+	val arg:String="";
+	def errorFn(str: String) = Console println str
+
+	val command = new scala.tools.nsc.GenericRunnerCommand(List(""), errorFn _)
+    import command.settings
+	
+	import nsc.reporters._
+	import nsc.interactive.RangePositions	
+	val reporter = new ConsoleReporter(settings)
+	
+	object compiler extends Global(settings, reporter) with RangePositions {
+	    override protected def computeInternalPhases() {
+	      phasesSet += syntaxAnalyzer
+	      phasesSet += analyzer.namerFactory
+	      phasesSet += analyzer.packageObjects
+	      phasesSet += analyzer.typerFactory
+	      phasesSet += superAccessors
+	      phasesSet += pickler
+	      phasesSet += refchecks
+	    }
+	    override def onlyPresentation = true	   
+	}
+	
+	def compile(arg:String) = {
+	  println("Compiling "+arg)
+	  val run = new dCompiler.compiler.Run()
+	  run compile List(arg)
+	  //println(run.units.foldLeft("")( _ + _.toString ))
+	   import dCompiler.compiler.definitions.{ RootPackage => RP, EmptyPackage => EP}
+	   
+	  for(c <- EP.info.members) {
+	 	  println(c)
+	  }
+	 	  
+	  for(u <- run.units/*; d <- u.defined*/) {
+	 	  u.position(null)
+	 	  println(u.defined)
+	 	  //println(d + " " + d.pos)
+	  }
+	}
+	
+}
+
 object SourcePlugin {
 	def main(args:Array[String]):Unit = { println("here I am");
 		scala.tools.nsc.Main.main(
