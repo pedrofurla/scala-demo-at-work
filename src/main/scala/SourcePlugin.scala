@@ -80,12 +80,8 @@ class SourcePlugin(val global: Global) extends Plugin {
 	       	  
 	       	  { import scala.tools.nsc.io._
 	         	val pos = interestingSource.pos
-	         	println(pos)
-	       	    println(pos.getClass)
-	       	    println(pos.isOpaqueRange)
-	       	    println(pos.isTransparent)
-	       	    //println(pos.end)
-	        	println(File(tree.symbol.sourceFile.path).lines.take(pos.line-1).reduceLeft(_ + "\n"+_)) 
+	         	tree.symbol.owner
+	        	//println(File(tree.symbol.sourceFile.path).lines.take(pos.line-1).reduceLeft(_ + "\n"+_)) 
 	          } 
 	       	  /*println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
 	       	  println("lit: pos:"+lit.pos+" tpe:"+lit.tpe+" symbol:"+lit.symbol)
