@@ -8,6 +8,10 @@ object sample {
 		block
 	}
 
+	magicDef("bleh","da magic") {		
+		println("Check")
+	}
+	
 	def main(args:Array[String]):Unit = {
 		magicDef("bleh","da magic") {			
 			val x = 1

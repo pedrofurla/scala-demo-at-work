@@ -71,38 +71,34 @@ class SourcePlugin(val global: Global) extends Plugin {
 	   * This method transforms individual nodes of the tree.
 	   */
 	  override def transform(tree: Tree) = tree match {
-	      case outerApply @ Apply(apply @ Apply( method @ Select(_,name),  args @ (arg1 :: arg2 :: Nil)) , outerArgs @ _ ) 
-	      		if (name.toString == "magicDef") =>
-	       	  val const = Constant("MORE MAGIC!")
+	      case outerApply @ Apply(apply @ Apply( method @ Select(_,name),  args @ (arg1 :: arg2 :: Nil)) , interestingSource :: _ ) 
+	      		if (name.toString == "magicDef") =>	       	 
+	          val const = Constant("MORE MAGIC!")
 	       	  val lit = Literal(const)
 	       	  lit.pos = arg2.pos
 	       	  lit.tpe = const.tpe
-	       	  //val lit = treeCopy.Literal(arg2,Constant("MORE MAGIC!"))
-	       	  println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
+	       	  
+	       	  { import scala.tools.nsc.io._
+	         	val pos = interestingSource.pos
+	         	println(pos)
+	       	    println(pos.getClass)
+	       	    println(pos.isOpaqueRange)
+	       	    println(pos.isTransparent)
+	       	    //println(pos.end)
+	        	println(File(tree.symbol.sourceFile.path).lines.take(pos.line-1).reduceLeft(_ + "\n"+_)) 
+	          } 
+	       	  /*println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
 	       	  println("lit: pos:"+lit.pos+" tpe:"+lit.tpe+" symbol:"+lit.symbol)
-	       	  println("const:  tpe:"+const.tpe)
+	       	  println("const:  tpe:"+const.tpe)*/
+	          
 	       	  val newApply = treeCopy.Apply(apply, method, arg1 :: lit :: Nil)
-	       	  val newOuterApply = treeCopy.Apply(outerApply, newApply, outerArgs)
+	       	  val newOuterApply = treeCopy.Apply(outerApply, newApply, List(interestingSource))
 	       	  newOuterApply
 	      case t =>        
 	          super.transform(t)
 	  }
   }
-  object TreeTransformerTest extends Transformer {
-    
-	  /**
-	   * This method transforms individual nodes of the tree.
-	   */
-	  override def transform(tree: Tree) = tree match {
-	      case defDef @ DefDef(mods,name,tparams,vparams,tpt,impl) if(name.toString == "magicDef") => 
-	          import scala.tools.nsc.symtab.Flags._
-	          val tree = treeCopy.DefDef(defDef, mods | PRIVATE,name,tparams,vparams,tpt,transform(impl))
-	          tree.symbol.setFlag(PRIVATE)              
-	          tree
-	      case t =>        
-	          super.transform(t)
-	  }
-  }
+  
 }
 object SourcePlugin {
 	def main(args:Array[String]):Unit = { println("here I am");
