@@ -35,7 +35,7 @@ class SourcePlugin(val global: Global) extends Plugin {
     	  for (unit <- global.currentRun.units; if !unit.isJava) {
     	 	   unit.body = TreeTransformer.transform(unit.body)
     	  } 
-    	  println(unit.body)
+    	  //println(unit.body)
     	  
     	  /*for ( 
     	 		 tree @ Apply(Apply( Select(_,name), args @ (arg1 :: arg2 :: Nil)) , _ ) <- unit.body;
@@ -80,8 +80,8 @@ class SourcePlugin(val global: Global) extends Plugin {
 	       	  
 	       	  { import scala.tools.nsc.io._
 	         	val pos = interestingSource.pos
-	         	//tree.symbol.owner
-	         	DumpScalaCompiler.compile(tree.symbol.sourceFile.path)
+	         	println("Wanted source "+pos)
+	         	DumpScalaCompiler.compile(tree.symbol.sourceFile.path,pos)
 	        	//println(File(tree.symbol.sourceFile.path).lines.take(pos.line-1).reduceLeft(_ + "\n"+_)) 
 	          } 
 	       	  /*println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
@@ -98,7 +98,7 @@ class SourcePlugin(val global: Global) extends Plugin {
   
 }
 
-object DumpScalaCompiler { dCompiler =>
+object DumpScalaCompiler { 
 	val arg:String="";
 	def errorFn(str: String) = Console println str
 
@@ -119,31 +119,40 @@ object DumpScalaCompiler { dCompiler =>
 	      phasesSet += pickler
 	      phasesSet += refchecks
 	    }
-	    override def onlyPresentation = true	   
+	    override def onlyPresentation = true
+	    //println(classPath)
+	    import scala.tools.util._
+	    //println(new PathResolver(settings).Calculated )
 	}
-	
-	def compile(arg:String) = {
+	import scala.tools.nsc.util.Position
+	def compile(arg:String, pos:Position) = {
 	  println("Compiling "+arg)
-	  val run = new dCompiler.compiler.Run()
+	  val run = new compiler.Run()
 	  run compile List(arg)
 	  //println(run.units.foldLeft("")( _ + _.toString ))
-	   import dCompiler.compiler.definitions.{ RootPackage => RP, EmptyPackage => EP}
+	  import compiler.definitions.{ RootPackage => RP, EmptyPackage => EP}
+	  
+	  /*
+	   OffsetPosition 
+	   override def toString = {
+229	    val pointmsg = if (point > source.length) "out-of-bounds-" else "offset="
+230	    "source-%s,line-%s,%s%s".format(source.path, line, pointmsg, point)
+231	  }
 	   
-	  for(c <- EP.info.members) {
-	 	  println(c)
-	  }
-	 	  
-	  for(u <- run.units/*; d <- u.defined*/) {
-	 	  u.position(null)
-	 	  println(u.defined)
-	 	  //println(d + " " + d.pos)
-	  }
+	   override def toString = "RangePosition("+source+", "+start+", "+point+", "+end+")"
+	   */
+	   
+	  for(u <- compiler.currentRun.units; b <- u.body; if b.pos == pos ) println(b.getClass.getSimpleName+ " " +b+ " " +b.pos)
+	 /* for(c <- EP.info.members; if c.sourceFile!=null) {
+	 	  println(c+" "+c.info.member(compiler.newTermName("main")).infosString)
+	  }*/
+	  
 	}
 	
 }
 
 object SourcePlugin {
-	def main(args:Array[String]):Unit = { println("here I am");
+	def main(args:Array[String]):Unit = { 
 		scala.tools.nsc.Main.main(
 			Array(
 				"src/main/scala/sample.scala",

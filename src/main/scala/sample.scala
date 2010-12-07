@@ -8,9 +8,10 @@ object sample {
 		block
 	}
 
-	/*magicDef("bleh","da magic") {		
-		println("Check")
-	}*/
+	magicDef("bleh","da magic") {
+		println("Check1")
+		println("Check2")
+	}
 	
 	def main(args:Array[String]):Unit = {
 		magicDef("bleh","da magic") {			
