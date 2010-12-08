@@ -82,7 +82,6 @@ class SourcePlugin(val global: Global) extends Plugin {
 	         	val pos = interestingSource.pos
 	         	println("Wanted source "+pos)
 	         	DumpScalaCompiler.compile(tree.symbol.sourceFile.path,pos)
-	        	//println(File(tree.symbol.sourceFile.path).lines.take(pos.line-1).reduceLeft(_ + "\n"+_)) 
 	          } 
 	       	  /*println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
 	       	  println("lit: pos:"+lit.pos+" tpe:"+lit.tpe+" symbol:"+lit.symbol)
@@ -129,24 +128,30 @@ object DumpScalaCompiler {
 	  println("Compiling "+arg)
 	  val run = new compiler.Run()
 	  run compile List(arg)
-	  //println(run.units.foldLeft("")( _ + _.toString ))
-	  import compiler.definitions.{ RootPackage => RP, EmptyPackage => EP}
-	  
-	  /*
-	   OffsetPosition 
-	   override def toString = {
-229	    val pointmsg = if (point > source.length) "out-of-bounds-" else "offset="
-230	    "source-%s,line-%s,%s%s".format(source.path, line, pointmsg, point)
-231	  }
 	   
+	  /*
+	   OffsetPosition	   
 	   override def toString = "RangePosition("+source+", "+start+", "+point+", "+end+")"
 	   */
 	   
-	  for(u <- compiler.currentRun.units; b <- u.body; if b.pos == pos ) println(b.getClass.getSimpleName+ " " +b+ " " +b.pos)
-	 /* for(c <- EP.info.members; if c.sourceFile!=null) {
-	 	  println(c+" "+c.info.member(compiler.newTermName("main")).infosString)
-	  }*/
-	  
+	  /*for(u <- compiler.currentRun.units; b <- u.body; if b.pos == pos ) 
+	   println(b.getClass.getSimpleName+ " " +b+ " " +b.pos)*/
+	 	 
+	   val poss = compiler.currentRun.units.map { _.body filter { _.pos == pos } map { _.pos } }.toList flatten
+	   
+	   val rangePos = poss match {
+	  	   case pos :: Nil => pos
+	  	   case pos1 :: pos2 :: Nil => 
+	  	     if (pos1.start == pos1.point) pos1
+	  	     else pos2 // TODO e o caso em que pos2.start != pos2.point ?
+	  	   case _ => throw new RuntimeException("Unable to find source position"); // TODO tratar isso melhor
+	   }
+	   
+	   println("Found source:"+rangePos)
+	   println("size:"+(rangePos.end - rangePos.start))
+	   
+	   val array = compiler.currentRun.units.toList(0).source.content.drop(rangePos.start).take(rangePos.end - rangePos.start+2)
+	   println("["+new String(array).replace("\t", "#")+"]")
 	}
 	
 }

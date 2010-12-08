@@ -9,9 +9,22 @@ object sample {
 	}
 
 	magicDef("bleh","da magic") {
-		println("Check1")
-		println("Check2")
+		println("ACheck1")
+		println("ACheck2")
 	}
+	
+	magicDef("bleh","da magic") {
+		println("BCheck1")
+	}
+	
+	magicDef("bleh","da magic") { println("CCheck1") }
+	
+	magicDef("bleh","da magic") 
+	{
+		println("DCheck1")
+		println("DCheck2")    
+	}
+	
 	
 	def main(args:Array[String]):Unit = {
 		magicDef("bleh","da magic") {			
