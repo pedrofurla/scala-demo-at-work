@@ -35,7 +35,7 @@ class SourcePlugin(val global: Global) extends Plugin {
     	  for (unit <- global.currentRun.units; if !unit.isJava) {
     	 	   unit.body = TreeTransformer.transform(unit.body)
     	  } 
-    	  //println(unit.body)
+    	  println(unit.body)
     	  
     	  /*for ( 
     	 		 tree @ Apply(Apply( Select(_,name), args @ (arg1 :: arg2 :: Nil)) , _ ) <- unit.body;
@@ -66,29 +66,26 @@ class SourcePlugin(val global: Global) extends Plugin {
     }
   }
   object TreeTransformer extends Transformer {
-    
-	  /**
-	   * This method transforms individual nodes of the tree.
-	   */
+    	  
 	  override def transform(tree: Tree) = tree match {
-	      case outerApply @ Apply(apply @ Apply( method @ Select(_,name),  args @ (arg1 :: arg2 :: Nil)) , interestingSource :: _ ) 
-	      		if (name.toString == "magicDef") =>	       	 
-	          val const = Constant("MORE MAGIC!")
+	      case outerApply @ Apply(apply @ Apply( method @ Select(_,name),  args @ (arg1 :: arg2 :: Nil)) , codeFrag :: _ ) 
+	      		if (name.toString == "magicDef") =>
+	       	  val sourceCode = { val pos = codeFrag.pos
+	         	//println("Wanted source "+pos)
+	         	DumbScalaCompiler.rescueSource(tree.symbol.sourceFile.path,pos)
+	          } 
+	       	  val const = Constant(sourceCode)
 	       	  val lit = Literal(const)
 	       	  lit.pos = arg2.pos
 	       	  lit.tpe = const.tpe
 	       	  
-	       	  { import scala.tools.nsc.io._
-	         	val pos = interestingSource.pos
-	         	println("Wanted source "+pos)
-	         	DumpScalaCompiler.compile(tree.symbol.sourceFile.path,pos)
-	          } 
+	       	  
 	       	  /*println("arg2: pos:"+arg2.pos+" tpe:"+arg2.tpe+" symbol:"+arg2.symbol)
 	       	  println("lit: pos:"+lit.pos+" tpe:"+lit.tpe+" symbol:"+lit.symbol)
 	       	  println("const:  tpe:"+const.tpe)*/
 	          
 	       	  val newApply = treeCopy.Apply(apply, method, arg1 :: lit :: Nil)
-	       	  val newOuterApply = treeCopy.Apply(outerApply, newApply, List(interestingSource))
+	       	  val newOuterApply = treeCopy.Apply(outerApply, newApply, List(codeFrag))
 	       	  newOuterApply
 	      case t =>        
 	          super.transform(t)
@@ -97,7 +94,7 @@ class SourcePlugin(val global: Global) extends Plugin {
   
 }
 
-object DumpScalaCompiler { 
+object DumbScalaCompiler { 
 	val arg:String="";
 	def errorFn(str: String) = Console println str
 
@@ -124,8 +121,8 @@ object DumpScalaCompiler {
 	    //println(new PathResolver(settings).Calculated )
 	}
 	import scala.tools.nsc.util.Position
-	def compile(arg:String, pos:Position) = {
-	  println("Compiling "+arg)
+	def rescueSource(arg:String, pos:Position):String = {
+	  //println("Compiling "+arg)
 	  val run = new compiler.Run()
 	  run compile List(arg)
 	   
@@ -147,11 +144,16 @@ object DumpScalaCompiler {
 	  	   case _ => throw new RuntimeException("Unable to find source position"); // TODO tratar isso melhor
 	   }
 	   
-	   println("Found source:"+rangePos)
-	   println("size:"+(rangePos.end - rangePos.start))
+	   //println("Found source:"+rangePos)
+	   //println("size:"+(rangePos.end - rangePos.start))
 	   
-	   val array = compiler.currentRun.units.toList(0).source.content.drop(rangePos.start).take(rangePos.end - rangePos.start+2)
-	   println("["+new String(array).replace("\t", "#")+"]")
+	   // dropping everything before the wanted code
+	   val top = compiler.currentRun.units.toList(0).source.content.drop(rangePos.start)
+	   // if the code begins with `{` then it must end only in the `}`
+	   val middle = top.take(rangePos.end - rangePos.start) ++ 
+	   	            (if(top(0).toString == "{") top.drop(rangePos.end - rangePos.start).takeWhile { _.toString != "}" } ++ "}" else Array.empty[Char]) 
+	   //println("["+new String(middle).replace("\t", "#")+"]")
+	   new String(middle)
 	}
 	
 }

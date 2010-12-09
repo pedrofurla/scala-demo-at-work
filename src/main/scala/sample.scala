@@ -5,6 +5,8 @@ class SourceProvider extends StaticAnnotation
 object sample {
 	def magicDef(title:String,magic: String @SourceProvider)(block: => Unit):Unit = {
 		println("==> "+title)
+		println("magic begin:\n"+magic);
+		println("-------------");
 		block
 	}
 
