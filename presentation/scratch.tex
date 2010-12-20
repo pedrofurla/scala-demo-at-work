@@ -2,6 +2,8 @@
 
 \documentclass{article}
 \usepackage{graphicx}
+%\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
 
 \begin{document}
 Hello world!
@@ -17,12 +19,14 @@ paragraph.
 \\ \\
 \# \$ \% \~n \^o \~a
 
+XeLaTeX: á,é,í
+
 This is an % stupid
 % Better: instructive <----
 example: Supercal%
             ifragilist%
 icexpialidocious
 
-\includegraphics[scale=0.33]{Scala-is-a-Unifier.png}
+\includegraphics[scale=0.20]{Scala-is-a-Unifier.png}
 
 \end{document}
