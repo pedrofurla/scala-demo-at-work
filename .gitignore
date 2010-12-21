@@ -11,3 +11,12 @@ project/plugins/src_managed/
 .scala_dependencies
 .classpath
 bin-tmp/
+presentation/*.pdf
+presentation/*.aux
+presentation/*.nav
+presentation/*.out
+presentation/*.log
+presentation/*.snm
+presentation/*.toc
+presentation/*.vrb
+presentation/*.synctex.gz

@@ -1,3 +1,4 @@
+% !TEX TS-program = xelatex
 
 % Copyright 2010 by Pedro Furlanetto 
 %
@@ -136,12 +137,50 @@
 \begin{frame}{Unifica funcional e orientação a objeto} 
     \centering{ \includegraphics[scale=0.20]{Scala-is-a-Unifier.png}   } 
 \end{frame}
-\begin{frame}{Algumas características} 
-    \begin{itemize}
-	\item Sintaxe simples e consistente 
+
+\begin{frame}[fragile]{Algumas características} 
+    \begin{itemize} %[<+->]
+        \item Sintaxe simples e consistente 
+        \begin{itemize}
+              \item Exemplo: imports em qualquer lugar limitados pelo escopo 
+        \end{itemize}
+        \item Baseado em expressões
+        \item Tudo são objetos e chamada de métodos (ala \emph{Smalltalk})
+             \begin{lstlisting}
+                 1 + 5 * 4 == 1.(5.*(4))
+             \end{lstlisting}
+        \item Métodos podem ser ``operadores''
+        \item Closures e funções como \emph{first-class citizens}
+             \begin{lstlisting}
+                 val int2String =  (i:Int) => i.toString
+             \end{lstlisting}
+         \item Herança múltipla com \emph{traits e mixins}
     \end{itemize}
 \end{frame}
+
+\subsection{Será que é complicado?}
+
+\begin{frame}{Será que é complicado?}
+	\begin{columns}
+           \begin{column}{.5\textwidth}               
+              \centering{``\emph{Com grandes poderes vêm grandes responsabilidades.}''}
+           \end{column}
+           \begin{column}{.5\textwidth}
+               \includegraphics[height=5cm]{spiderman.png}
+           \end{column}
+	\end{columns}
+
+\end{frame}
  
+\begin{frame}[fragile] {Sample Scala}
+
+    \begin{lstlisting}
+    val t = "hello" 
+    val x = 42 
+    \end{lstlisting}
+
+\end{frame}
+
 \begin{frame}{Columns and Alignment}
      \begin{columns}[t] % contents are top vertically aligned
      \begin{column}[T]{5cm} % each column can also be its own environment
@@ -154,14 +193,7 @@
      \end{columns}
 \end{frame}
 
-\begin{frame}[fragile] {Sample Scala}
 
-    \begin{lstlisting}
-    val t = "hello" 
-    val x = 42 
-    \end{lstlisting}
-
-\end{frame}
 
 \begin{frame}{Blocks}
  
@@ -224,15 +256,6 @@
         Second item.}
     \end{itemize}
   \end{itemize}
-\end{frame}
-
-
-\subsection{Previous Work}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
 \end{frame}
 
 
