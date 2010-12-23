@@ -35,14 +35,15 @@
     new,null,object,override,package,%
     private,protected,requires,return,sealed,%
     super,this,throw,trait,true,try,%
-    type,val,var,while,with,yield},
+    type,val,var,while,with,yield}, % scala>
   otherkeywords={=>,<-,<\%,<:,>:,\#,@},
   sensitive=true,
   morecomment=[l]{//},
   morecomment=[n]{/*}{*/},
   morestring=[b]",
   morestring=[b]',
-  morestring=[b]"""
+  morestring=[b]""",
+  literate={=>}{$\Rightarrow$ }2 {<-}{$\leftarrow$}2 {->}{$\rightarrow$}2
 }
 
 
@@ -114,7 +115,7 @@
 
 \subsection{De onde veio}
 
-\begin{frame}{Criada por}
+\begin{frame}{Criada por} 
 	\begin{itemize}
 	\item Martin Odersky - \emph{École Polytechnique Fédérale de Lausanne} (EPFL), Lausanne, Switzerland em 2001
 	\begin{itemize}
@@ -155,6 +156,23 @@
                  val int2String =  (i:Int) => i.toString
              \end{lstlisting}
          \item Herança múltipla com \emph{traits e mixins}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Mais algumas características} 
+    \begin{itemize} %[<+->]
+        \item Linha de comando - \emph{REPL}
+        \item Accessors e Mutators automáticos
+        \item Construtor e proriedades juntos
+        \item Argumentos defaults e nomeados
+        \item \emph{Case Classes}
+\begin{lstlisting}
+scala> case class Exemplo(var nome:String = "<Sem Nome>", var idade:Int = 18)
+scala> new Exemplo()
+res0: Exemplo = Exemplo(<Sem Nome>,18)
+scala> new Exemplo(idade = 20)
+res1: Exemplo = Exemplo(<Sem Nome>,20)
+\end{lstlisting}
     \end{itemize}
 \end{frame}
 
