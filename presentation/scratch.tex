@@ -47,7 +47,8 @@
   frame=single,
   breaklines=true,
   breakatwhitespace=true
-  tabsize=3
+  tabsize=3,
+resetmargins=true
 }
 
 \begin{document}
@@ -75,8 +76,12 @@ icexpialidocious
 \includegraphics[scale=0.20]{Scala-is-a-Unifier.png}
 
     \begin{lstlisting}
-    val t = "hello" 
+    	val t = "hello" 
     val x = 42 
+    for(x <- lista) yield {
+ 	x
+    }
+
     \end{lstlisting}
 
 \end{document}
