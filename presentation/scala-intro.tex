@@ -36,7 +36,7 @@
     private,protected,requires,return,sealed,%
     super,this,throw,trait,true,try,%
     type,val,var,while,with,yield}, % scala>
-  otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@,=,:},
   sensitive=true,
   morecomment=[l]{//},
   morecomment=[n]{/*}{*/},
@@ -66,8 +66,9 @@
   stringstyle=\color{mauve},
   frame=single,
   breaklines=true,
-  breakatwhitespace=true
-  tabsize=3
+  breakatwhitespace=true,
+  tabsize=7,
+  mathescape=true
 }
 
 \setbeamertemplate{navigation symbols}{}%remove navigation symbols
@@ -136,7 +137,7 @@
 \subsection{O que é Scala?}
 
 \begin{frame}{Unifica funcional e orientação a objeto} 
-    \centering{ \includegraphics[scale=0.20]{Scala-is-a-Unifier.png}   } 
+    \centering{\includegraphics[scale=0.20]{Scala-is-a-Unifier.png}} 
 \end{frame}
 
 \begin{frame}[fragile]{Algumas características} 
@@ -146,11 +147,11 @@
               \item Exemplo: imports em qualquer lugar limitados pelo escopo 
         \end{itemize}
         \item Baseado em expressões
-        \item Tudo são objetos e chamada de métodos (ala \emph{Smalltalk})
+        \item Tudo são objetos e chamadas de métodos (ala \emph{Smalltalk})
              \begin{lstlisting}
                  1 + 5 * 4 == 1.(5.*(4))
              \end{lstlisting}
-        \item Métodos podem ser ``operadores''
+        \item Inferência de tipos
         \item Closures e funções como \emph{first-class citizens}
              \begin{lstlisting}
                  val int2String =  (i:Int) => i.toString
@@ -164,17 +165,53 @@
         \item Linha de comando - \emph{REPL}
         \item Accessors e Mutators automáticos
         \item Construtor e proriedades juntos
-        \item Argumentos defaults e nomeados
-        \item \emph{Case Classes}
+        \item Argumentos defaults e nomeados        
 \begin{lstlisting}
-scala> case class Exemplo(var nome:String = "<Sem Nome>", var idade:Int = 18)
-scala> new Exemplo()
-res0: Exemplo = Exemplo(<Sem Nome>,18)
-scala> new Exemplo(idade = 20)
-res1: Exemplo = Exemplo(<Sem Nome>,20)
+scala> class Exemplo(var nome:String = "<Sem Nome>", var idade:Int = 18)
+scala> val e = new Exemplo()
+scala> (e.idade, e.nome)
+res6: $\textbf{(Int, String) = (18,<Sem Nome>)}$
+scala> val e2= new Exemplo(idade = 20)
+scala> (e2.idade, e2.nome)
+res9: $\textbf{(Int, String) = (20,<Sem Nome>)}$
 \end{lstlisting}
     \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]{Mais algumas características} 
+    \begin{itemize} %[<+->]
+        \item Scala não tem \emph{métodos estáticos} - mas tem \emph{objetos companheiros}
+        \begin{itemize}
+	\item Uma declaração \emph{object} no mesmo fonte e com o mesmo nome da classe
+        \end{itemize}
+        \item \emph{Case Classes}
+        \begin{itemize}
+              \item Uma classe que já implementa \emph{hashCode}, \emph{equals} e \emph{toString}
+	   \item Também implementa um \emph{objeto companheiro} com os métodos \emph{apply} e \emph{unapply}
+        \end{itemize}
+        \item Método \emph{apply} funciona como um ``método default''
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Mais algumas características} 
+    \begin{itemize} %[<+->]
+        \item Refazendo o exemplo como \emph{Case Classe}  e um \emph{objeto companheiro}
+\begin{lstlisting}
+case class Exemplo(var nome:String = "<Sem Nome>", var idade:Int = 18); 
+object Exemplo {
+	def media(e:Exemplo, e2:Exemplo) =
+		 ( e.idade + e2.idade ) / 2
+}
+scala> val e = Exemplo(idade=20, nome="Fulano")
+e: Exemplo = $\textbf{Exemplo(Fulano,20)}$
+scala> val e2 = Exemplo("João",30)
+e2: Exemplo = $\textbf{Exemplo(João,30)}$
+scala> Exemplo.media(e,e2)
+res10: Int = $\textbf{25}$
+\end{lstlisting}
+    \end{itemize}
+\end{frame}
+
 
 \subsection{Será que é complicado?}
 
@@ -190,180 +227,17 @@ res1: Exemplo = Exemplo(<Sem Nome>,20)
 
 \end{frame}
  
-\begin{frame}[fragile] {Sample Scala}
-
-    \begin{lstlisting}
-    val t = "hello" 
-    val x = 42 
-    \end{lstlisting}
-
-\end{frame}
-
-\begin{frame}{Columns and Alignment}
-     \begin{columns}[t] % contents are top vertically aligned
-     \begin{column}[T]{5cm} % each column can also be its own environment
-     Contents of first column \\ split into two lines
-     \end{column}
-     \begin{column}[T]{5cm} % alternative top-align that's better for graphics
-         % \includegraphics[height=3cm]{graphic.png}
-	Contents of second column with bigger line to see how break works
-     \end{column}
-     \end{columns}
-\end{frame}
-
-
-
-\begin{frame}{Blocks}
- 
-   \begin{block}{This is a Block}
-      This is important information
-   \end{block}
- 
-   \begin{alertblock}{This is an Alert block}
-   This is an important alert
-   \end{alertblock}
- 
-   \begin{exampleblock}{This is an Example block}
-   This is an example 
-   \end{exampleblock}
- 
-\end{frame}
-
-
-
-
-
-\begin{frame}{Make Titles Informative. Use Uppercase Letters.}{Subtitles are optional.}
-  % - A title should summarize the slide in an understandable fashion
-  %   for anyone how does not follow everything on the slide itself.
-
-  \begin{itemize}
-  \item
-    Use \texttt{itemize} a lot.
-  \item
-    Use very short sentences or short phrases.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-
-  You can create overlays\dots
-  \begin{itemize}
-  \item using the \texttt{pause} command:
-    \begin{itemize}
-    \item
-      First item.
-      \pause
-    \item    
-      Second item.
-    \end{itemize}
-  \item
-    using overlay specifications:
-    \begin{itemize}
-    \item<3->
-      First item.
-    \item<4->
-      Second item.
-    \end{itemize}
-  \item
-    using the general \texttt{uncover} command:
-    \begin{itemize}
-      \uncover<5->{\item
-        First item.}
-      \uncover<6->{\item
-        Second item.}
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-
 
 \section{Our Results/Contribution}
 
 \subsection{Main Results}
 
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-
 \subsection{Basic Ideas for Proofs/Implementation}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
 
 
 \section*{Summary}
 
-\begin{frame}{Summary}
 
-  % Keep the summary *very short*.
-  \begin{itemize}
-  \item
-    The \alert{first main message} of your talk in one or two lines.
-  \item
-    The \alert{second main message} of your talk in one or two lines.
-  \item
-    Perhaps a \alert{third message}, but not more than that.
-  \end{itemize}
-  
-  % The following outlook is optional.
-  \vskip0pt plus.5fill
-  \begin{itemize}
-  \item
-    Outlook
-    \begin{itemize}
-    \item
-      Something you haven't solved.
-    \item
-      Something else you haven't solved.
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-
-
-% All of the following is optional and typically not needed. 
-\appendix
-\section<presentation>*{\appendixname}
-\subsection<presentation>*{For Further Reading}
-
-\begin{frame}[allowframebreaks]
-  \frametitle<presentation>{For Further Reading}
-    
-  \begin{thebibliography}{10}
-    
-  \beamertemplatebookbibitems
-  % Start with overview books.
-
-  \bibitem{Author1990}
-    A.~Author.
-    \newblock {\em Handbook of Everything}.
-    \newblock Some Press, 1990.
- 
-    
-  \beamertemplatearticlebibitems
-  % Followed by interesting articles. Keep the list short. 
-
-  \bibitem{Someone2000}
-    S.~Someone.
-    \newblock On this and that.
-    \newblock {\em Journal of This and That}, 2(1):50--100,
-    2000.
-  \end{thebibliography}
-\end{frame}
 
 \end{document}
 
