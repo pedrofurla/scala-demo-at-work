@@ -20,3 +20,7 @@ presentation/*.snm
 presentation/*.toc
 presentation/*.vrb
 presentation/*.synctex.gz
+presentation/*.bbl
+presentation/*.blg
+presentation/*.tcp
+presentation/*.tps
